@@ -55,16 +55,51 @@ function rps(p1Val, p2Val) {
     }[p1Val][p2Val] + rpsValues(p1Val);
 }
 
+/**
+ * Return the outcome value (lose, draw, win) given specified outcome code (x,y,z)
+ * @param {*} code 
+ */
+function lookupOutcome(code){
+    return {
+        'X': LOSS,
+        'Y': TIE,
+        'Z': WIN
+    }[code]
+}
+
+/** 
+ * return the required counter move from p2 required to acheive the specified
+ * outcome, give the specified move from p1
+ **/
+function rpsCounter(p1Val, outcome){
+    return {
+        [R]: {[LOSS]: S, [TIE]: R, [WIN]: P},
+        [P]: {[LOSS]: R, [TIE]: P, [WIN]: S},
+        [S]: {[LOSS]: P, [TIE]: S, [WIN]: R},
+    }[p1Val][outcome]
+}
+
 function tabulateMatches(lines) {
-    matches = lines.map(line => line.split(/\s+/)
+    var matches = lines.map(line => line.split(/\s+/)
                 ).map(m => [codeToRps(m[0]), codeToRps(m[1])]);
     // console.log(`matches: ${matches}`);
     // console.log(`matches[0]: ${matches[0]}`);
-    scores = matches.map(m => rps(m[1], m[0]));
-    total = scores.reduce((sum, score) => {return sum+= score}, 0)
-    console.log(`scores: ${total}`);
+    var scores = matches.map(m => rps(m[1], m[0]));
+    var total = scores.reduce((sum, score) => {return sum+= score}, 0)
+    console.log(`scores part1: ${total}`);
+}
 
+function tabulateCounters(lines) {
+    var matches = lines.map(line => line.split(/\s+/))
+                    .map(m => [codeToRps(m[0]), lookupOutcome(m[1])])
+                    .map(m => [m[0], rpsCounter(m[0], m[1])])
+    // console.log(`matches[0]: ${matches[0]}`)
+    // .map(m => [codeToRps(m[0]), codeToRps(m[1])]);
+    var scores = matches.map(m => rps(m[1], m[0]));
+    var total = scores.reduce((sum, score) => {return sum+= score}, 0)
+    console.log(`scores part2: ${total}`);
 
+                
 }
 
 async function main() {
@@ -73,6 +108,7 @@ async function main() {
     console.log("finished reading lines");
     tabulateMatches(lines);
 
+    tabulateCounters(lines);
 
 }
 
