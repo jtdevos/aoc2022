@@ -23,8 +23,33 @@ function findCommonItem(items) {
     var pocket2 = items.slice(items.length / 2, items.length);
 
     //find common item
-    var common = pocket1.filter(item => pocket2.includes(item));
+    var common = intersection(pocket1, pocket2);
     return common[0];
+}
+
+//return a list of common items between lists 1 & 2
+function intersection(list1, list2) {
+    var common = list1.filter(item => list2.includes(item));
+    return common;
+}
+
+function groupify(itemLists) {
+    //verify!
+    if(itemLists.length %3 !== 0) {throw "invalid number of rucksacks!"}
+    
+    //break into groups
+    var groups = []
+    for(var i =0; i < itemLists.length; i += 3) {
+        var group = itemLists.slice(i, i+3);
+        groups.push(group);
+    }
+    return groups;
+}
+
+// determine appropriate group item for group of three elves
+function groupItem(group) {
+    var [a, b, c] = group;
+    return intersection(intersection(a, b), c)[0];
 }
 
 async function main() {
@@ -49,6 +74,15 @@ async function main() {
     var prioritySum = commonItems.reduce((sum, item) => sum += itemPriority(item), 0);
     console.log(`Sum of Priorities: ${prioritySum}`);
 
+    var groups = groupify(itemLists);
+    i = 3;
+    // console.log(`group ${i} size:${groups[i].length}`)
+    // console.log(`group ${i} size:${groups[i].length}`)
+    // console.log(`group ${i} sticker:${groupItem(groups[i])}`);
+
+    var groupStickers = groups.map(g => groupItem(g));
+    var groupSum = groupStickers.reduce((sum, item) => sum += itemPriority(item), 0);
+    console.log(`Groups Item Type Sum: ${groupSum}`);
 
 }
 
