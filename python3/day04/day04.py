@@ -5,7 +5,6 @@ def read_lines(path):
         lines = [line.rstrip() for line in file]
     return lines
 
-
 def lines_to_ranges(lines):
     pairs = [x.split(',') for x in lines]
     pairs = [[x[0].split('-'), x[1].split('-')] for x in pairs]
@@ -14,24 +13,13 @@ def lines_to_ranges(lines):
     # sets = [[set(y) for y in x] for x in rgs]
     return rgs
 
-
 def count_overlaps(rangepairs):
-    i = 0
-    o = 0
-    for rp in rangepairs:
-        r1, r2 = rp
-        s1, s2 = [set(x) for x in rp]
-        if s1.issubset(s2):
-            print(f"Range {r1} is subset of {r2}")
-            i += 1
-        elif s1.issuperset(s2):
-            print(f"Range {r1} is SUPERSET of {r2}")
-            i += 1
-        if len(s1.intersection(s2)) > 0:
-            o += 1
+    setpairs = [[set(x) for x in y] for y in rangepairs]
+    numContained = sum([1 for (s1, s2) in setpairs if s1.issuperset(s2) or s1.issubset(s2)])
+    numOverlap = sum([1 for (s1, s2)in setpairs if len(s1.intersection(s2)) > 0])
     print(f"Total lines\t {len(rangepairs)}")
-    print(f"Total contains\t {i}")
-    print(f"Total overlaps\t {o}")
+    print(f"Total contains\t {numContained}")
+    print(f"Total overlaps\t {numOverlap}")
 
 def main():
     print(f"done with main")
