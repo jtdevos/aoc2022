@@ -48,16 +48,24 @@ def stack_report(stacks):
     print("Stack Report")
     for i, stack in enumerate(stacks):
         print(f'\t stack {i}:\t {stack}')
-    
     print(f"Top of stacks: {''.join([x[len(x)-1] for x in stacks])}")
 
 def update_stacks(stacks, src, dest, qty):
     for i in range(qty):
         stacks[dest].append(stacks[src].pop())
 
+def update_stacks_9001(stacks, src, dest, qty):
+    items = stacks[src][0-qty:]
+    del stacks[src][0-qty:]
+    stacks[dest].extend(items)
+    
 def part1(stacks, instructions):
     for qty, src, dest in instructions:
         update_stacks(stacks, src-1, dest-1, qty)
+
+def part2(stacks, instructions):
+    for qty, src, dest in instructions:
+        update_stacks_9001(stacks, src-1, dest-1, qty)
 
 def main():
     lines = read_lines('day05/input.txt')
@@ -68,8 +76,14 @@ def main():
     stack_report(stacks)
 
     part1(stacks, instructions)
-    print("\nAfter")
+    print("\nAfter Stacker 9000")
     stack_report(stacks)
+
+    stacks = load_stacks(lines)
+    part2(stacks, instructions)
+    print("\nAfter Stacker 9001")
+    stack_report(stacks)
+    
 
 
 
